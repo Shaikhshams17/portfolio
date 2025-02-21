@@ -30,7 +30,7 @@ export default function Skills() {
       </motion.h2>
 
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4 sm:px-6 md:px-8 w-full max-w-7xl"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
@@ -42,7 +42,7 @@ export default function Skills() {
         {skills.map((skill, index) => (
           <motion.div
             key={index}
-            className="bg-red-600 text-white p-8 rounded-3xl shadow-2xl flex flex-col items-center 
+            className="bg-red-600 text-white p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col items-center 
               transform transition-all duration-500 hover:scale-110 hover:-translate-y-2 hover:bg-white hover:text-black 
               backdrop-blur-lg bg-opacity-90 border border-red-700"
             variants={{
@@ -54,10 +54,10 @@ export default function Skills() {
             <motion.img
               src={skill.img}
               alt={skill.title}
-              className="w-24 h-24 object-contain mb-6"
+              className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-4 sm:mb-6"
               whileHover={{ scale: 1.2, rotate: 10 }}
             />
-            <h3 className="text-2xl font-bold">{skill.title}</h3>
+            <h3 className="text-xl sm:text-2xl font-bold">{skill.title}</h3>
           </motion.div>
         ))}
       </motion.div>

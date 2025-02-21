@@ -30,12 +30,12 @@ const experienceData = [
 
 const Experience = () => {
   return (
-    <div className="py-10 bg-black h-96">
+    <div className="py-10 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-center text-white mb-10">
           Experience
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {experienceData.map((exp) => (
             <div
               key={exp.id}
