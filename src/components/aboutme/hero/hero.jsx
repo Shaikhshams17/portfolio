@@ -53,7 +53,7 @@ const Hero = () => {
           transition={{ duration: 1.5 }}
         >
           <img
-            src="/ali.jpg" // Replace with your image path
+            src="/ali1.jpg" // Replace with your image path
             alt="Shams Ali Shaikh"
             className="w-56 h-56 sm:w-72 sm:h-72 mt-8 md:w-80 md:h-80 object-cover rounded-full shadow-xl border-4 border-white"
           />
