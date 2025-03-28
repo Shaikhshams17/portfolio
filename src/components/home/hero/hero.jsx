@@ -11,32 +11,16 @@ export default function HeroBanner() {
     <div className="relative w-screen h-screen flex items-center justify-center px-4 sm:px-6 md:px-16 lg:px-24 overflow-hidden">
       {/* Background Video */}
       <video autoPlay loop muted className="absolute w-full h-full object-cover">
-        <source src="/17.mp4" type="video/mp4" />
+        <source src="/23.mp4" type="video/mp4" />
       </video>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      {/* Overlay with reduced opacity for better video visibility */}
+      <div className="absolute inset-0 bg-black bg-opacity-10"></div>
 
       {/* Hero Content Wrapper */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-full h-full">
-        {/* Profile Image (Left Side) */}
-        <motion.div
-          className="w-32 h-32 sm:w-40 sm:h-40 md:w-60 md:h-60 lg:w-72 lg:h-72 bg-white bg-opacity-0 p-2 rounded-xl shadow-lg flex-shrink-0"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1.2 }}
-        >
-          {/* <Image
-            src="/ali.jpg" // Replace with your actual image path
-            alt="Shams"
-            width={300}
-            height={300}
-            className="rounded-lg object-cover w-full h-full"
-          /> */}
-        </motion.div>
-
-        {/* Hero Content (Right Side) */}
-        <div className="flex-grow flex flex-col items-center md:items-end text-white text-center md:text-right w-full max-w-xl mt-6 md:mt-0">
+      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full text-center">
+        {/* Hero Content (Centered in the middle of the video) */}
+        <div className="text-white">
           <motion.h1
             className="text-3xl sm:text-4xl md:text-5xl font-bold"
             initial={{ x: 100, opacity: 0 }}
@@ -59,10 +43,10 @@ export default function HeroBanner() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 1.4 }}
           >
-            MERN Stack Developer || DevOps Engineer
+            Mern Stack Developer || DevOps Engineer
           </motion.p>
           <motion.button
-            className="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition"
+            className="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-black transition"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.6 }}
