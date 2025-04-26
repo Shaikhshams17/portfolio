@@ -1,15 +1,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const Hero = () => {
   return (
     <section className="relative flex items-center justify-center py-10 px-6 sm:px-10 text-white h-full md:h-screen">
       {/* Background Image */}
-      <img
-        src="https://4kwallpapers.com/images/walls/thumbs_3t/791.jpg"
-        alt="Background"
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
-      />
+      <div className="absolute top-0 left-0 w-full h-full z-0">
+        <Image
+          src="/about-bg.jpg"
+          alt="Background"
+          layout="fill"
+          objectFit="cover"
+          quality={100}
+          priority
+        />
+      </div>
 
       <div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-7xl mx-auto">
         {/* Left Section (Text Content) */}
@@ -29,7 +35,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 }}
           >
-            I specialize in modern web development, crafting responsive websites and powerful web applications. Let’s build something amazing together.
+            I specialize in modern web development, crafting responsive websites and powerful web applications. Let's build something amazing together.
           </motion.p>
 
           <div className="mt-6">
@@ -52,11 +58,16 @@ const Hero = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.5 }}
         >
-          <img
-            src="/shamsali.jpg" // Replace with your image path
-            alt="Shams Ali Shaikh"
-            className="w-56 h-56 sm:w-72 sm:h-72 mt-8 md:w-80 md:h-80 object-cover rounded-full shadow-xl border-4 border-white"
-          />
+          {/* <div className="relative w-56 h-56 sm:w-72 sm:h-72 mt-8 md:w-80 md:h-80 rounded-full shadow-xl border-4 border-white overflow-hidden">
+            <Image
+              src="/shamsali.jpg" // Replace with your image path
+              alt="Shams Ali Shaikh"
+              layout="fill"
+              objectFit="cover"
+              quality={100}
+              priority
+            />
+          </div> */}
         </motion.div>
       </div>
     </section>

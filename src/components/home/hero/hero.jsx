@@ -1,6 +1,47 @@
-import { motion } from "framer-motion";
-import Image from "next/image";
+// src/components/home/hero/hero.jsx
 import React from "react";
+import PropTypes from "prop-types";
+import { motion } from "framer-motion";
+
+const typingContainer = {
+  hidden: { opacity: 1 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.04,
+      delayChildren: delay,
+    },
+  }),
+};
+
+const typingLetter = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+function TypewriterText({ text, className = "", delay = 0 }) {
+  return (
+    <motion.div
+      className={`${className} inline-block overflow-hidden`}
+      variants={typingContainer}
+      initial="hidden"
+      animate="visible"
+      custom={delay}
+    >
+      {Array.from(text).map((char, i) => (
+        <motion.span key={i} variants={typingLetter}>
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </motion.div>
+  );
+}
+
+TypewriterText.propTypes = {
+  text: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  delay: PropTypes.number,
+};
 
 export default function HeroBanner() {
   const handleWhatsAppClick = () => {
@@ -14,47 +55,35 @@ export default function HeroBanner() {
         <source src="/23.mp4" type="video/mp4" />
       </video>
 
-      {/* Overlay with reduced opacity for better video visibility */}
-      <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-10" />
 
-      {/* Hero Content Wrapper */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full text-center">
-        {/* Hero Content (Centered in the middle of the video) */}
-        <div className="text-white">
-          <motion.h1
-            className="text-3xl sm:text-4xl md:text-5xl font-bold"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            Hi,
-          </motion.h1>
-          <motion.h2
-            className="text-4xl sm:text-5xl md:text-6xl font-bold mt-2"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 1.2 }}
-          >
-            I'm <span className="text-red-600">Shams Ali</span>
-          </motion.h2>
-          <motion.p
-            className="text-lg sm:text-xl md:text-2xl font-semibold mt-2"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 1.4 }}
-          >
-            Mern Stack Developer || DevOps Engineer
-          </motion.p>
-          <motion.button
-            className="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-black transition"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.6 }}
-            onClick={handleWhatsAppClick}
-          >
-            Contact
-          </motion.button>
-        </div>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-start justify-center w-full h-full text-left pl-4 sm:pl-6 md:pl-16 lg:pl-24 text-white">
+        <TypewriterText
+          text="Hi,"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold"
+          delay={0}
+        />
+        <TypewriterText
+          text="I'm Shams Ali"
+          className="mt-2 text-4xl sm:text-5xl md:text-6xl font-bold"
+          delay={0.8}
+        />
+        <TypewriterText
+          text="Mern Stack Developer || DevOps Engineer"
+          className="mt-2 text-lg sm:text-xl md:text-2xl font-semibold"
+          delay={1.6}
+        />
+        <motion.button
+          className="mt-6 px-6 py-3 bg-[#c0c81f] text-black rounded-lg font-bold hover:bg-black transition"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 2.4 }}
+          onClick={handleWhatsAppClick}
+        >
+          Contact
+        </motion.button>
       </div>
     </div>
   );
