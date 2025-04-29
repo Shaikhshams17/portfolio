@@ -29,7 +29,7 @@ export default function Projects() {
   ];
 
   return (
-    <div className="bg-gradient-to-b from-black to-gray-600 min-h-screen py-16 flex flex-col items-center">
+    <div className="bg-[#29414a]  min-h-screen py-16 flex flex-col items-center">
       <h2 className="text-5xl font-extrabold text-white mb-12 uppercase tracking-wide">
         My Projects
       </h2>
@@ -38,7 +38,7 @@ export default function Projects() {
         {projectList.map((project, index) => (
           <motion.div
             key={index}
-            className="bg-gray-900 text-white p-6 rounded-3xl shadow-xl flex flex-col items-center 
+            className="bg-[#c9c8cb] text-black p-6 rounded-3xl shadow-xl flex flex-col items-center 
               transition-transform duration-500 hover:scale-105 hover:shadow-2xl"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -55,7 +55,7 @@ export default function Projects() {
               {project.tech.map((tech, i) => (
                 <span
                   key={i}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold"
+                  className="bg-[#c0c81f] text-black px-4 py-2 rounded-lg font-semibold"
                 >
                   {tech}
                 </span>
