@@ -58,7 +58,7 @@ const Hero = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.5 }}
         >
-          {/* <div className="relative w-56 h-56 sm:w-72 sm:h-72 mt-8 md:w-80 md:h-80 rounded-full shadow-xl border-4 border-white overflow-hidden">
+          <div className="relative w-56 h-56 sm:w-72 sm:h-72 mt-8 md:w-80 md:h-80 rounded-full shadow-xl border-4 border-white overflow-hidden">
             <Image
               src="/shamsali.jpg" // Replace with your image path
               alt="Shams Ali Shaikh"
@@ -67,7 +67,7 @@ const Hero = () => {
               quality={100}
               priority
             />
-          </div> */}
+          </div>
         </motion.div>
       </div>
     </section>

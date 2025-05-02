@@ -10,7 +10,7 @@ export default function Home() {
       <Navbar />
       <HeroBanner />
       <Skills />
-      <Projects />
+     <Projects/>
     </>
   );
 }

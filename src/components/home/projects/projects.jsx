@@ -38,7 +38,7 @@ export default function Projects() {
         {projectList.map((project, index) => (
           <motion.div
             key={index}
-            className="bg-[#c9c8cb] text-black p-6 rounded-3xl shadow-xl flex flex-col items-center 
+            className="bg-[#afb1b3] text-black p-6 rounded-3xl shadow-xl flex flex-col items-center 
               transition-transform duration-500 hover:scale-105 hover:shadow-2xl"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
