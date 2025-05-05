@@ -4,13 +4,34 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import * as THREE from "three";
 
-// Floating Skill Cards (Desktop)
-function FloatingSkills({ skills }) {
-  const columns = 4;
-  const spacing = 3.5;
-  const totalRows = Math.ceil(skills.length / columns);
-  const xOffset = ((columns - 1) / 2) * spacing;
-  const yOffset = ((totalRows - 1) / 2) * spacing;
+// Floating Skill Cards (Desktop and Laptop)
+function FloatingSkills({ skills, deviceSize }) {
+  // Adjust layout based on device size
+  const getLayoutParams = () => {
+    // Default (Large Desktop)
+    let columns = 4;
+    let spacing = 3.5;
+    let cardScale = 1;
+    
+    // Adjust for different screen sizes
+    if (deviceSize === "small-desktop") {
+      columns = 3;
+      spacing = 3;
+      cardScale = 0.9;
+    } else if (deviceSize === "laptop") {
+      columns = 3;
+      spacing = 2.5;
+      cardScale = 0.8;
+    }
+    
+    const totalRows = Math.ceil(skills.length / columns);
+    const xOffset = ((columns - 1) / 2) * spacing;
+    const yOffset = ((totalRows - 1) / 2) * spacing;
+    
+    return { columns, spacing, cardScale, totalRows, xOffset, yOffset };
+  };
+  
+  const { columns, spacing, cardScale, totalRows, xOffset, yOffset } = getLayoutParams();
 
   return skills.map((skill, index) => {
     const col = index % columns;
@@ -25,7 +46,7 @@ function FloatingSkills({ skills }) {
         floatIntensity={0.7}
         key={skill.title}
       >
-        <mesh position={[x, y, 0]}>
+        <mesh position={[x, y, 0]} scale={cardScale}>
           <planeGeometry args={[2.5, 3]} />
           <meshStandardMaterial
             color="#30444c"
@@ -37,7 +58,7 @@ function FloatingSkills({ skills }) {
           />
           <Html center>
             <motion.div
-              className="w-full h-full p-6 rounded-xl backdrop-blur-sm border border-teal-300/20"
+              className="w-full h-full p-4 rounded-xl backdrop-blur-sm border border-teal-300/20"
               style={{
                 background: "linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)",
                 boxShadow: "0 10px 30px rgba(48, 68, 76, 0.15)"
@@ -54,15 +75,15 @@ function FloatingSkills({ skills }) {
                 transition: { delay: index * 0.075, duration: 0.5, ease: "easeOut" } 
               }}
             >
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-lg mb-3 flex items-center justify-center border border-gray-200">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg mb-2 flex items-center justify-center border border-gray-200">
                 <img
                   src={skill.img}
                   alt={skill.title}
                   className="w-4/5 h-auto mx-auto filter drop-shadow-md"
                 />
               </div>
-              <h3 className="text-gray-800 text-xl font-bold text-center mt-2">{skill.title}</h3>
-              <div className="h-0.5 w-12 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full mx-auto mt-2 opacity-80"></div>
+              <h3 className="text-gray-800 text-lg font-bold text-center mt-1">{skill.title}</h3>
+              <div className="h-0.5 w-10 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full mx-auto mt-1 opacity-80"></div>
             </motion.div>
           </Html>
         </mesh>
@@ -71,7 +92,7 @@ function FloatingSkills({ skills }) {
   });
 }
 
-// Interactive Background (Desktop)
+// Interactive Background
 function InteractiveBackground({ mouse }) {
   const sphereRef = useRef();
   const { viewport } = useThree();
@@ -144,8 +165,81 @@ function InteractiveBackground({ mouse }) {
   );
 }
 
-// Desktop View
-function SkillsDesktop({ skills }) {
+// Tablet View - Grid Layout with 3D effects
+function SkillsTablet({ skills }) {
+  return (
+    <div 
+      className="py-16 px-8 min-h-screen" 
+      style={{ 
+        background: "linear-gradient(135deg, #30444c 0%, #243842 100%)"
+      }}
+    >
+      {/* Subtle background pattern */}
+      <div 
+        className="absolute inset-0 opacity-10" 
+        style={{ 
+          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+          backgroundSize: "30px 30px"
+        }}
+      ></div>
+
+      <div className="text-center mb-12">
+        <h2 
+          className="text-5xl font-bold mb-2 text-white"
+          style={{
+            textShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          Skills
+        </h2>
+        <div className="h-0.5 w-20 bg-gradient-to-r from-teal-400 to-teal-300 rounded-full mx-auto mt-1"></div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-6">
+        {skills.map((skill, index) => (
+          <motion.div
+            key={skill.title}
+            className="p-5 rounded-xl flex flex-col items-center justify-center"
+            style={{ 
+              background: "linear-gradient(145deg, #ffffff, #f5f5f5)",
+              boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)"
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ 
+              opacity: 1, 
+              y: 0,
+              transition: { delay: index * 0.075, duration: 0.5, ease: "easeOut" } 
+            }}
+            whileHover={{
+              y: -5,
+              boxShadow: "0 15px 20px rgba(0, 0, 0, 0.15)",
+              transition: { type: "spring", stiffness: 200, damping: 20 },
+            }}
+          >
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg mb-3 w-full flex items-center justify-center border border-gray-200">
+              <img
+                src={skill.img}
+                alt={skill.title}
+                className="w-16 h-16 object-contain"
+              />
+            </div>
+            <h3 className="text-gray-800 font-semibold text-center">
+              {skill.title}
+            </h3>
+            <div className="h-0.5 w-8 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full mx-auto mt-2 opacity-80"></div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Decorative elements */}
+      <div className="fixed top-0 right-0 h-32 w-32 bg-teal-500/5 rounded-bl-full"></div>
+      <div className="fixed bottom-0 left-0 h-40 w-40 bg-teal-400/5 rounded-tr-full"></div>
+    </div>
+  );
+}
+
+// Enhanced Desktop View with responsiveness
+function SkillsDesktop({ skills, deviceSize }) {
   const mouse = {
     x: useSpring(useMotionValue(0), { stiffness: 50, damping: 25 }),
     y: useSpring(useMotionValue(0), { stiffness: 50, damping: 25 }),
@@ -156,6 +250,16 @@ function SkillsDesktop({ skills }) {
     mouse.x.set(((e.clientX - rect.left) / rect.width - 0.5) * 2);
     mouse.y.set((0.5 - (e.clientY - rect.top) / rect.height) * 2);
   }, [mouse]);
+
+  // Adjust camera position based on device size
+  const getCameraPosition = () => {
+    if (deviceSize === "laptop") {
+      return [0, 0, 18]; // Move camera back to see more on smaller screens
+    } else if (deviceSize === "small-desktop") {
+      return [0, 0, 16];
+    }
+    return [0, 0, 15]; // Default for large desktops
+  };
 
   return (
     <div
@@ -174,9 +278,9 @@ function SkillsDesktop({ skills }) {
         }}
       ></div>
 
-      <Canvas camera={{ position: [0, 0, 15], fov: 50 }}>
+      <Canvas camera={{ position: getCameraPosition(), fov: 50 }}>
         <InteractiveBackground mouse={mouse} />
-        <FloatingSkills skills={skills} />
+        <FloatingSkills skills={skills} deviceSize={deviceSize} />
         <Stars radius={100} depth={50} count={1500} factor={3} saturation={0} fade speed={0.8} />
         <OrbitControls 
           enableZoom={false} 
@@ -194,15 +298,15 @@ function SkillsDesktop({ skills }) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, ease: "easeOut" }}
       >
-        <h2 
-          className="text-5xl md:text-7xl font-bold z-10 text-white"
+        {/* <h2 
+          className="text-4xl md:text-5xl lg:text-7xl font-bold z-10 text-white"
           style={{
             textShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
           }}
         >
           SKILLS
-        </h2>
-        <div className="h-0.5 w-24 bg-gradient-to-r from-teal-400 to-teal-300 rounded-full mx-auto mt-3"></div>
+        </h2> */}
+        {/* <div className="h-0.5 w-24 bg-gradient-to-r from-teal-400 to-teal-300 rounded-full mx-auto mt-3"></div> */}
       </motion.div>
 
       {/* Decorative elements */}
@@ -285,12 +389,23 @@ function SkillsMobile({ skills }) {
   );
 }
 
-// Main Skills Component
+// Main Skills Component with enhanced device detection
 export default function Skills() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [deviceType, setDeviceType] = useState("desktop");
 
   const handleResize = useCallback(() => {
-    setIsMobile(window.innerWidth < 768);
+    const width = window.innerWidth;
+    if (width < 640) {
+      setDeviceType("mobile");
+    } else if (width < 900) {
+      setDeviceType("tablet");
+    } else if (width < 1100) {
+      setDeviceType("laptop");
+    } else if (width < 1440) {
+      setDeviceType("small-desktop");
+    } else {
+      setDeviceType("desktop");
+    }
   }, []);
 
   useEffect(() => {
@@ -314,5 +429,12 @@ export default function Skills() {
     { title: "Python", img: "/10.png" },
   ];
 
-  return isMobile ? <SkillsMobile skills={skills} /> : <SkillsDesktop skills={skills} />;
+  // Render appropriate view based on device type
+  if (deviceType === "mobile") {
+    return <SkillsMobile skills={skills} />;
+  } else if (deviceType === "tablet") {
+    return <SkillsTablet skills={skills} />;
+  } else {
+    return <SkillsDesktop skills={skills} deviceSize={deviceType} />;
+  }
 }

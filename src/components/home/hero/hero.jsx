@@ -1,5 +1,4 @@
-// src/components/home/hero/hero.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
@@ -44,16 +43,42 @@ TypewriterText.propTypes = {
 };
 
 export default function HeroBanner() {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Detect if the device is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Consider devices with width less than 768px as mobile
+    };
+    
+    // Check on initial load
+    checkIfMobile();
+    
+    // Add event listener to check on resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/7385841171", "_blank");
   };
 
   return (
     <div className="relative w-screen h-screen flex items-center justify-center px-4 sm:px-6 md:px-16 lg:px-24 overflow-hidden">
-      {/* Background Video */}
-      <video autoPlay loop muted className="absolute w-full h-full object-cover">
-        <source src="/23.mp4" type="video/mp4" />
-      </video>
+      {/* Background Video for desktop, Image for mobile */}
+      {isMobile ? (
+        <img 
+          src="/home.jpg" 
+          alt="Mobile Background" 
+          className="absolute w-full h-full object-cover"
+        />
+      ) : (
+        <video autoPlay loop muted className="absolute w-full h-full object-cover">
+          <source src="/23.mp4" type="video/mp4" />
+        </video>
+      )}
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-10" />
