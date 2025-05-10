@@ -40,7 +40,7 @@ export default function Projects() {
       title: "AI Chatbot",
       description:
         "Intelligent chatbot with natural language processing capabilities built with Python and machine learning libraries.",
-      image: "/chatbot.jpg",
+      image: "/projectchatbot.png",
       tech: ["Python", "NLTK", "TensorFlow", "Flask"],
       icon: <MessageSquare className="w-6 h-6" />,
       github: "#",
