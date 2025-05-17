@@ -1,102 +1,94 @@
 import { motion } from "framer-motion";
 import React, { useState } from "react";
-import { Code, FileCode, Server, Database, PanelRight, Workflow, Laptop, Github, Users, ShoppingCart, Briefcase, MessageSquare, StickyNote, Film } from "lucide-react";
+import { Code, FileCode, Server, Database, PanelRight, Workflow, Laptop, Github, Users, ShoppingCart, Briefcase, MessageSquare, StickyNote, Film, Target, Gamepad, Car } from "lucide-react";
+
 
 export default function Projects() {
   const [hoveredProject, setHoveredProject] = useState(null);
   
   const projectList = [
-    {
+  {
+    title: "Bounce Game",
+    description:
+      "A classic 2D ball bouncing game built using Python and Pygame on Pydroid3, featuring smooth controls and fun physics.",
+    image: "/bouncegame.png",
+    tech: ["Python", "Pygame", "Pydroid3","Panda3D"],
+    icon: <Gamepad className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/Bounce-Game"
+  },
+   {
       title: "Social Media Platform",
       description:
         "A full-featured social media platform with real-time updates, user profiles, and content sharing built with MERN stack.",
-      image: "/social-media.jpg", 
+      image: "/socialmedia.png", 
       tech: ["MongoDB", "Express.js", "React", "Node.js", "Socket.io"],
       icon: <Users className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
+      github: "https://github.com/Shaikhshams17/socialmedia"
     },
-    {
-      title: "E-Commerce Website",
-      description:
-        "Complete e-commerce solution with product catalog, shopping cart, user authentication, and payment processing.",
-      image: "/ecommerce.jpg",
-      tech: ["MongoDB", "Express.js", "React", "Node.js", "Stripe"],
-      icon: <ShoppingCart className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Job Portal",
-      description:
-        "Job search platform with advanced filtering, applicant tracking, and employer dashboards using Next.js and Django.",
-      image: "/job-portal.jpg",
-      tech: ["Next.js", "Django", "PostgreSQL", "Tailwind CSS"],
-      icon: <Briefcase className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "AI Chatbot",
-      description:
-        "Intelligent chatbot with natural language processing capabilities built with Python and machine learning libraries.",
-      image: "/projectchatbot.png",
-      tech: ["Python", "NLTK", "TensorFlow", "Flask"],
-      icon: <MessageSquare className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Note Taking App",
-      description:
-        "Markdown-enabled note taking application with cloud sync, organization features, and rich text editing.",
-      image: "/notes-app.jpg",
-      tech: ["Next.js", "TypeScript", "Firebase", "Tailwind CSS"],
-      icon: <StickyNote className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Movie Platform",
-      description:
-        "Streaming platform with movie catalog, user ratings, watchlists, and recommendation engine.",
-      image: "/movie-platform.jpg",
-      tech: ["MongoDB", "Express.js", "React", "Node.js", "TMDB API"],
-      icon: <Film className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Task Manager",
-      description:
-        "A powerful task and project management system designed for global collaboration, built using the MERN stack.",
-      image: "/project1.png", 
-      tech: ["MongoDB", "Express.js", "React", "Node.js"],
-      icon: <Workflow className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Fire Detection System",
-      description:
-        "A real-time AI-based fire detection system using Python and OpenCV, capable of early fire detection and alerting.",
-      image: "/project2.jpg",
-      tech: ["Python", "OpenCV", "AI", "Computer Vision"],
-      icon: <Code className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "My-Portfolio",
-      description:
-        "I built my personal portfolio using Next.js 15 with the App Router, ensuring a modern, high-performance web experience.",
-      image: "/project3.png",
-      tech: ["Next.js", "React-icons", "Framer-Motion"],
-      icon: <Laptop className="w-6 h-6" />,
-      github: "#",
-      demo: "#"
-    },
-  ];
+  {
+    title: "Ghost Shooter",
+    description:
+      "A fast-paced 2D shooter game where players shoot ghosts and survive waves using Python and Pygame on Pydroid3.",
+    image: "/shooter.png",
+    tech: ["Python", "Pygame", "Pydroid3","Panda3D"],
+    icon: <Target className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/Ghost-shooter"
+  },
+  {
+    title: "AI Chatbot",
+    description:
+      "Intelligent chatbot with natural language processing capabilities built with Python and machine learning libraries.",
+    image: "/projectchatbot.png",
+    tech: ["Python", "NLTK", "TensorFlow", "Flask"],
+    icon: <MessageSquare className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/chatbot"
+  },
+  {
+    title: "2D Racing Game",
+    description:
+      "Exciting 2D racing game built in Python using Pygame and Pydroid3, complete with lap tracking and responsive controls.",
+    image: "/cargame.png",
+    tech: ["Python", "Pygame", "Pydroid3","Cocos3D"],
+    icon: <Car className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/2d-car-game"
+  },
+  {
+    title: "Movie Platform",
+    description:
+      "Streaming platform with movie catalog, user ratings, watchlists, and recommendation engine.",
+    image: "/movie.jpg",
+    tech: ["MongoDB", "Express.js", "React", "Node.js", "TMDB API"],
+    icon: <Film className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/movie-platform"
+  },
+  {
+    title: "Task Manager",
+    description:
+      "A powerful task and project management system designed for global collaboration, built using the MERN stack.",
+    image: "/project1.png",
+    tech: ["MongoDB", "Express.js", "React", "Node.js"],
+    icon: <Workflow className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/Task-manager-froentend"
+  },
+  {
+    title: "Fire Detection System",
+    description:
+      "A real-time AI-based fire detection system using Python and OpenCV, capable of early fire detection and alerting.",
+    image: "/project2.jpg",
+    tech: ["Python", "OpenCV", "AI", "Computer Vision"],
+    icon: <Code className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/fire-detection-system"
+  },
+  {
+    title: "My-Portfolio",
+    description:
+      "I built my personal portfolio using Next.js 15 with the App Router, ensuring a modern, high-performance web experience.",
+    image: "/project3.png",
+    tech: ["Next.js", "React-icons", "Framer-Motion"],
+    icon: <Laptop className="w-6 h-6" />,
+    github: "https://github.com/Shaikhshams17/portfolio"
+  }
+]
 
   // Icon mapping for tech stack
   const techIcons = {
@@ -209,7 +201,7 @@ export default function Projects() {
                   </div>
                   
                   {/* Action Buttons */}
-                  {/* <div className="flex gap-3 pt-3 border-t border-gray-700">
+                  <div className="flex gap-3 pt-3 border-t border-gray-700">
                     {project.github && (
                       <motion.a 
                         href={project.github}
@@ -223,7 +215,7 @@ export default function Projects() {
                         View Code
                       </motion.a>
                     )}
-                    {project.demo && (
+                    {/* {project.demo && (
                       <motion.a 
                         href={project.demo}
                         target="_blank"
@@ -234,8 +226,8 @@ export default function Projects() {
                       >
                         Live Demo
                       </motion.a>
-                    )}
-                  </div> */}
+                    )} */}
+                  </div>
                 </div>
                 
                 {/* Animated highlight effect */}
