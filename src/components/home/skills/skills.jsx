@@ -1,248 +1,142 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html, Float, Stars } from "@react-three/drei";
-import { useRef, useEffect, useState, useCallback } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
-// Floating Skill Cards (Desktop and Laptop)
-function FloatingSkills({ skills, deviceSize }) {
-  // Adjust layout based on device size
+// Simplified skill orbs with better positioning
+function SkillOrbs({ skills, deviceSize }) {
+  const groupRef = useRef();
+  
   const getLayoutParams = () => {
-    // Default (Large Desktop)
-    let columns = 4;
-    let spacing = 3.5;
-    let cardScale = 1;
+    let radius = 8;
+    let verticalSpread = 4;
+    let orbScale = 1.0;
     
-    // Adjust for different screen sizes
     if (deviceSize === "small-desktop") {
-      columns = 3;
-      spacing = 3;
-      cardScale = 0.9;
+      radius = 7;
+      verticalSpread = 3;
+      orbScale = 0.9;
     } else if (deviceSize === "laptop") {
-      columns = 3;
-      spacing = 2.5;
-      cardScale = 0.8;
+      radius = 6;
+      verticalSpread = 2.5;
+      orbScale = 0.8;
     }
     
-    const totalRows = Math.ceil(skills.length / columns);
-    const xOffset = ((columns - 1) / 2) * spacing;
-    const yOffset = ((totalRows - 1) / 2) * spacing;
-    
-    return { columns, spacing, cardScale, totalRows, xOffset, yOffset };
+    return { radius, verticalSpread, orbScale };
   };
   
-  const { columns, spacing, cardScale, totalRows, xOffset, yOffset } = getLayoutParams();
+  const { radius, verticalSpread, orbScale } = getLayoutParams();
 
-  return skills.map((skill, index) => {
-    const col = index % columns;
-    const row = Math.floor(index / columns);
-    const x = col * spacing - xOffset;
-    const y = -row * spacing + yOffset;
-
-    return (
-      <Float 
-        speed={1.2} 
-        rotationIntensity={0.2} 
-        floatIntensity={0.7}
-        key={skill.title}
-      >
-        <mesh position={[x, y, 0]} scale={cardScale}>
-          <planeGeometry args={[2.5, 3]} />
-          <meshStandardMaterial
-            color="#30444c"
-            transparent
-            opacity={0.1}
-            metalness={0.6}
-            roughness={0.2}
-            envMapIntensity={1.5}
-          />
-          <Html center>
-            <motion.div
-              className="w-full h-full p-4 rounded-xl backdrop-blur-sm border border-teal-300/20"
-              style={{
-                background: "linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)",
-                boxShadow: "0 10px 30px rgba(48, 68, 76, 0.15)"
-              }}
-              whileHover={{
-                scale: 1.03,
-                boxShadow: "0 15px 30px rgba(48, 68, 76, 0.25)",
-                transition: { type: "spring", stiffness: 200, damping: 20 },
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0,
-                transition: { delay: index * 0.075, duration: 0.5, ease: "easeOut" } 
-              }}
-            >
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg mb-2 flex items-center justify-center border border-gray-200">
-                <img
-                  src={skill.img}
-                  alt={skill.title}
-                  className="w-4/5 h-auto mx-auto filter drop-shadow-md"
-                />
-              </div>
-              <h3 className="text-gray-800 text-lg font-bold text-center mt-1">{skill.title}</h3>
-              <div className="h-0.5 w-10 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full mx-auto mt-1 opacity-80"></div>
-            </motion.div>
-          </Html>
-        </mesh>
-      </Float>
-    );
-  });
-}
-
-// Interactive Background
-function InteractiveBackground({ mouse }) {
-  const sphereRef = useRef();
-  const { viewport } = useThree();
+  const positions = useMemo(() => {
+    return skills.map((_, index) => {
+      const angle = (index / skills.length) * Math.PI * 2;
+      const layer = Math.floor(index / 8);
+      const layerRadius = radius - layer * 2;
+      const x = Math.cos(angle) * layerRadius;
+      const z = Math.sin(angle) * layerRadius;
+      const y = (Math.sin(angle * 1.5) * verticalSpread * 0.4) + (layer * 1.5);
+      return [x, y, z];
+    });
+  }, [skills.length, radius, verticalSpread]);
 
   useFrame(({ clock }) => {
-    if (sphereRef.current) {
-      // Mouse follow effect with smoother transition
-      sphereRef.current.position.x = THREE.MathUtils.lerp(
-        sphereRef.current.position.x,
-        mouse.x.get() * viewport.width / 3,
-        0.02
-      );
-      sphereRef.current.position.y = THREE.MathUtils.lerp(
-        sphereRef.current.position.y,
-        mouse.y.get() * viewport.height / 3,
-        0.02
-      );
-      
-      // Subtle breathing effect
-      const t = clock.getElapsedTime();
-      sphereRef.current.scale.x = sphereRef.current.scale.y = sphereRef.current.scale.z = 
-        1 + Math.sin(t * 0.4) * 0.08;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = clock.getElapsedTime() * 0.1;
     }
   });
 
   return (
+    <group ref={groupRef}>
+      {skills.map((skill, index) => {
+        const [x, y, z] = positions[index];
+        
+        return (
+          <Float 
+            speed={1.2} 
+            rotationIntensity={0.1} 
+            floatIntensity={0.8}
+            key={skill.title}
+          >
+            <group position={[x, y, z]} scale={orbScale}>
+              <Html center distanceFactor={10}>
+                <motion.div
+                  className="relative cursor-pointer"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    transition: { 
+                      delay: index * 0.08, 
+                      duration: 0.6,
+                      type: "spring",
+                      stiffness: 100
+                    } 
+                  }}
+                  whileHover={{
+                    scale: 1.1,
+                    y: -3,
+                    transition: { type: "spring", stiffness: 300 }
+                  }}
+                >
+                  <div 
+                    className="w-32 h-36 p-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 hover:border-blue-400/40 transition-all duration-300 group hover:bg-white/15"
+                    style={{
+                      boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)"
+                    }}
+                  >
+                    {/* Icon container */}
+                    <div className="mb-3">
+                      <div className="bg-slate-800/60 p-3 rounded-lg border border-white/10 group-hover:border-white/20 transition-colors">
+                        <img
+                          src={skill.img}
+                          alt={skill.title}
+                          className="w-12 h-12 object-contain mx-auto"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-white text-xs font-medium text-center mb-2">
+                      {skill.title}
+                    </h3>
+                    
+                    {/* Simple progress bar */}
+                    <div className="h-0.5 bg-slate-600/50 rounded-full overflow-hidden">
+                      <motion.div 
+                        className="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ delay: index * 0.1 + 1, duration: 1 }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </Html>
+            </group>
+          </Float>
+        );
+      })}
+    </group>
+  );
+}
+
+// Clean lighting setup
+function SimpleLighting() {
+  return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1.2} color="#14b8a6" />
-      <pointLight position={[-10, -10, -5]} intensity={0.8} color="#0d9488" />
-      <directionalLight position={[-5, 5, 5]} intensity={0.8} color="#f0f0f0" />
-      
-      {/* Main glow sphere */}
-      <mesh ref={sphereRef} position={[0, 0, -5]}>
-        <sphereGeometry args={[2, 64, 64]} />
-        <meshStandardMaterial
-          color="#30444c"
-          transparent
-          opacity={0.1}
-          metalness={0.7}
-          roughness={0.2}
-          emissive="#2dd4bf"
-          emissiveIntensity={0.3}
-        />
-      </mesh>
-      
-      {/* Background elements */}
-      <mesh position={[5, -7, -10]}>
-        <sphereGeometry args={[1.5, 32, 32]} />
-        <meshStandardMaterial
-          color="#30444c"
-          transparent
-          opacity={0.08}
-          metalness={0.6}
-          roughness={0.3}
-        />
-      </mesh>
-      
-      <mesh position={[-6, 8, -12]}>
-        <sphereGeometry args={[2, 32, 32]} />
-        <meshStandardMaterial
-          color="#30444c"
-          transparent
-          opacity={0.08}
-          metalness={0.6}
-          roughness={0.3}
-        />
-      </mesh>
+      <ambientLight intensity={0.6} color="#ffffff" />
+      <pointLight position={[10, 10, 10]} intensity={0.8} color="#3b82f6" />
+      <pointLight position={[-10, -10, -5]} intensity={0.6} color="#8b5cf6" />
     </>
   );
 }
 
-// Tablet View - Grid Layout with 3D effects
-function SkillsTablet({ skills }) {
-  return (
-    <div 
-      className="py-16 px-8 min-h-screen" 
-      style={{ 
-        background: "linear-gradient(135deg, #30444c 0%, #243842 100%)"
-      }}
-    >
-      {/* Subtle background pattern */}
-      <div 
-        className="absolute inset-0 opacity-10" 
-        style={{ 
-          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
-          backgroundSize: "30px 30px"
-        }}
-      ></div>
-
-      <div className="text-center mb-12">
-        <h2 
-          className="text-5xl font-bold mb-2 text-white"
-          style={{
-            textShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          Skills
-        </h2>
-        <div className="h-0.5 w-20 bg-gradient-to-r from-teal-400 to-teal-300 rounded-full mx-auto mt-1"></div>
-      </div>
-      
-      <div className="grid grid-cols-3 gap-6">
-        {skills.map((skill, index) => (
-          <motion.div
-            key={skill.title}
-            className="p-5 rounded-xl flex flex-col items-center justify-center"
-            style={{ 
-              background: "linear-gradient(145deg, #ffffff, #f5f5f5)",
-              boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)"
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ 
-              opacity: 1, 
-              y: 0,
-              transition: { delay: index * 0.075, duration: 0.5, ease: "easeOut" } 
-            }}
-            whileHover={{
-              y: -5,
-              boxShadow: "0 15px 20px rgba(0, 0, 0, 0.15)",
-              transition: { type: "spring", stiffness: 200, damping: 20 },
-            }}
-          >
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg mb-3 w-full flex items-center justify-center border border-gray-200">
-              <img
-                src={skill.img}
-                alt={skill.title}
-                className="w-16 h-16 object-contain"
-              />
-            </div>
-            <h3 className="text-gray-800 font-semibold text-center">
-              {skill.title}
-            </h3>
-            <div className="h-0.5 w-8 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full mx-auto mt-2 opacity-80"></div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Decorative elements */}
-      <div className="fixed top-0 right-0 h-32 w-32 bg-teal-500/5 rounded-bl-full"></div>
-      <div className="fixed bottom-0 left-0 h-40 w-40 bg-teal-400/5 rounded-tr-full"></div>
-    </div>
-  );
-}
-
-// Enhanced Desktop View with responsiveness
-function SkillsDesktop({ skills, deviceSize }) {
+// Compact desktop experience
+function CompactDesktop({ skills, deviceSize }) {
   const mouse = {
-    x: useSpring(useMotionValue(0), { stiffness: 50, damping: 25 }),
-    y: useSpring(useMotionValue(0), { stiffness: 50, damping: 25 }),
+    x: useSpring(useMotionValue(0), { stiffness: 100, damping: 30 }),
+    y: useSpring(useMotionValue(0), { stiffness: 100, damping: 30 }),
   };
 
   const handlePointerMove = useCallback((e) => {
@@ -251,155 +145,210 @@ function SkillsDesktop({ skills, deviceSize }) {
     mouse.y.set((0.5 - (e.clientY - rect.top) / rect.height) * 2);
   }, [mouse]);
 
-  // Adjust camera position based on device size
   const getCameraPosition = () => {
-    if (deviceSize === "laptop") {
-      return [0, 0, 18]; // Move camera back to see more on smaller screens
-    } else if (deviceSize === "small-desktop") {
-      return [0, 0, 16];
-    }
-    return [0, 0, 15]; // Default for large desktops
+    if (deviceSize === "laptop") return [0, 0, 18];
+    if (deviceSize === "small-desktop") return [0, 0, 16];
+    return [0, 0, 14];
   };
 
   return (
-    <div
-      className="relative h-screen w-full overflow-hidden"
-      style={{ 
-        background: "linear-gradient(135deg, #30444c 0%, #243842 100%)"
-      }}
-      onPointerMove={handlePointerMove}
-    >
-      {/* Subtle background pattern */}
-      <div 
-        className="absolute inset-0 opacity-10" 
-        style={{ 
-          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
-          backgroundSize: "30px 30px"
-        }}
-      ></div>
-
-      <Canvas camera={{ position: getCameraPosition(), fov: 50 }}>
-        <InteractiveBackground mouse={mouse} />
-        <FloatingSkills skills={skills} deviceSize={deviceSize} />
-        <Stars radius={100} depth={50} count={1500} factor={3} saturation={0} fade speed={0.8} />
-        <OrbitControls 
-          enableZoom={false} 
-          enablePan={false} 
-          enableRotate={true}
-          rotateSpeed={0.2}
-          autoRotate
-          autoRotateSpeed={0.2}
-        />
-      </Canvas>
-
-      <motion.div
-        className="absolute top-12 left-1/2 -translate-x-1/2 z-10 text-center"
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
+    <div className="py-12  bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Header */}
+      <motion.div 
+        className="text-center mb-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
       >
-        {/* <h2 
-          className="text-4xl md:text-5xl lg:text-7xl font-bold z-10 text-white"
-          style={{
-            textShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          SKILLS
-        </h2> */}
-        {/* <div className="h-0.5 w-24 bg-gradient-to-r from-teal-400 to-teal-300 rounded-full mx-auto mt-3"></div> */}
+        <motion.h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+          Technical Skills
+        </motion.h2>
+        <motion.p className="text-slate-400 text-sm">
+          Hover and drag to explore • {skills.length} technologies
+        </motion.p>
       </motion.div>
 
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 h-40 w-40 bg-teal-500/5 rounded-bl-full"></div>
-      <div className="absolute bottom-0 left-0 h-56 w-56 bg-teal-400/5 rounded-tr-full"></div>
+      {/* 3D Skills Container */}
+      <div
+        className="relative h-96 w-full"
+        onPointerMove={handlePointerMove}
+      >
+        <Canvas camera={{ position: getCameraPosition(), fov: 60 }}>
+          <SimpleLighting />
+          <SkillOrbs skills={skills} deviceSize={deviceSize} />
+          <Stars 
+            radius={100} 
+            depth={50} 
+            count={500} 
+            factor={2} 
+            saturation={0} 
+            fade 
+            speed={0.3} 
+          />
+          <OrbitControls 
+            enableZoom={false} 
+            enablePan={false} 
+            enableRotate={true}
+            rotateSpeed={0.4}
+            autoRotate
+            autoRotateSpeed={0.3}
+          />
+        </Canvas>
+      </div>
+
+      {/* Bottom description */}
+      <motion.div
+        className="text-center mt-8 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 0.8 }}
+      >
+        <p className="text-slate-300 text-sm max-w-2xl mx-auto">
+          These are the core technologies I work with daily. Each skill represents years of hands-on experience 
+          building real-world applications and solving complex problems.
+        </p>
+      </motion.div>
     </div>
   );
 }
 
-// Mobile View - enhanced cards
-function SkillsMobile({ skills }) {
+// Condensed tablet view
+function CompactTablet({ skills }) {
   return (
-    <div 
-      className="py-16 px-6 min-h-screen" 
-      style={{ 
-        background: "linear-gradient(135deg, #30444c 0%, #243842 100%)"
-      }}
-    >
-      {/* Subtle background pattern */}
-      <div 
-        className="absolute inset-0 opacity-10" 
-        style={{ 
-          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
-          backgroundSize: "30px 30px"
-        }}
-      ></div>
-
-      <div className="text-center mb-12">
-        <h2 
-          className="text-5xl font-bold mb-2 text-white"
-          style={{
-            textShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          Skills
-        </h2>
-        <div className="h-0.5 w-20 bg-gradient-to-r from-teal-400 to-teal-300 rounded-full mx-auto mt-1"></div>
-      </div>
+    <div className="py-16 px-6 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Header */}
+      <motion.div 
+        className="text-center mb-12"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+          Technical Skills
+        </motion.h2>
+        <motion.div 
+          className="w-20 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: 80 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        />
+      </motion.div>
       
-      <div className="grid grid-cols-2 gap-6">
+      {/* Compact grid */}
+      <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
         {skills.map((skill, index) => (
           <motion.div
             key={skill.title}
-            className="p-5 rounded-xl flex flex-col items-center justify-center"
-            style={{ 
-              background: "linear-gradient(145deg, #ffffff, #f5f5f5)",
-              boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)"
-            }}
+            className="group"
             initial={{ opacity: 0, y: 20 }}
             animate={{ 
               opacity: 1, 
               y: 0,
-              transition: { delay: index * 0.075, duration: 0.5, ease: "easeOut" } 
+              transition: { 
+                delay: index * 0.05, 
+                duration: 0.5
+              } 
             }}
             whileHover={{
               y: -5,
-              boxShadow: "0 15px 20px rgba(0, 0, 0, 0.15)",
-              transition: { type: "spring", stiffness: 200, damping: 20 },
+              transition: { type: "spring", stiffness: 200 }
             }}
           >
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg mb-3 w-full flex items-center justify-center border border-gray-200">
-              <img
-                src={skill.img}
-                alt={skill.title}
-                className="w-16 h-16 object-contain"
-              />
+            <div className="p-4 bg-white/8 backdrop-blur-lg border border-white/10 hover:border-blue-400/30 transition-all duration-300 rounded-lg group-hover:bg-white/12">
+              <div className="flex flex-col items-center">
+                <div className="mb-3 group-hover:scale-105 transition-transform">
+                  <div className="bg-slate-800/60 p-3 rounded-lg border border-white/10">
+                    <img
+                      src={skill.img}
+                      alt={skill.title}
+                      className="w-10 h-10 object-contain"
+                    />
+                  </div>
+                </div>
+                
+                <h3 className="text-white font-medium text-sm text-center">
+                  {skill.title}
+                </h3>
+              </div>
             </div>
-            <h3 className="text-gray-800 font-semibold text-center text-sm">
-              {skill.title}
-            </h3>
-            <div className="h-0.5 w-8 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full mx-auto mt-2 opacity-80"></div>
           </motion.div>
         ))}
       </div>
-
-      {/* Decorative elements */}
-      <div className="fixed top-0 right-0 h-32 w-32 bg-teal-500/5 rounded-bl-full"></div>
-      <div className="fixed bottom-0 left-0 h-40 w-40 bg-teal-400/5 rounded-tr-full"></div>
     </div>
   );
 }
 
-// Main Skills Component with enhanced device detection
+// Streamlined mobile experience
+function StreamlinedMobile({ skills }) {
+  return (
+    <div className="py-12 px-4 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Header */}
+      <motion.div 
+        className="text-center mb-10"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+          My Skills
+        </motion.h2>
+        <motion.p className="text-slate-400 text-sm">
+          {skills.length} core technologies
+        </motion.p>
+      </motion.div>
+      
+      {/* Tight grid */}
+      <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+        {skills.map((skill, index) => (
+          <motion.div
+            key={skill.title}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1,
+              transition: { 
+                delay: index * 0.04, 
+                duration: 0.4
+              } 
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="p-3 bg-white/8 backdrop-blur-lg border border-white/10 rounded-lg">
+              <div className="flex flex-col items-center">
+                <div className="mb-2">
+                  <div className="bg-slate-800/60 p-2.5 rounded-lg border border-white/10">
+                    <img
+                      src={skill.img}
+                      alt={skill.title}
+                      className="w-8 h-8 object-contain"
+                    />
+                  </div>
+                </div>
+                
+                <h3 className="text-white font-medium text-xs text-center">
+                  {skill.title}
+                </h3>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Main component
 export default function Skills() {
   const [deviceType, setDeviceType] = useState("desktop");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
     if (width < 640) {
       setDeviceType("mobile");
-    } else if (width < 900) {
+    } else if (width < 1024) {
       setDeviceType("tablet");
-    } else if (width < 1100) {
+    } else if (width < 1200) {
       setDeviceType("laptop");
     } else if (width < 1440) {
       setDeviceType("small-desktop");
@@ -411,6 +360,9 @@ export default function Skills() {
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
+    
+    setTimeout(() => setIsLoaded(true), 100);
+    
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
@@ -429,12 +381,33 @@ export default function Skills() {
     { title: "Python", img: "/10.png" },
   ];
 
-  // Render appropriate view based on device type
-  if (deviceType === "mobile") {
-    return <SkillsMobile skills={skills} />;
-  } else if (deviceType === "tablet") {
-    return <SkillsTablet skills={skills} />;
-  } else {
-    return <SkillsDesktop skills={skills} deviceSize={deviceType} />;
+  if (!isLoaded) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <motion.div
+          className="w-8 h-8 border-2 border-blue-400 rounded-full border-t-transparent"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+    );
   }
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={deviceType}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        {deviceType === "mobile" && <StreamlinedMobile skills={skills} />}
+        {deviceType === "tablet" && <CompactTablet skills={skills} />}
+        {(deviceType === "laptop" || deviceType === "small-desktop" || deviceType === "desktop") && 
+          <CompactDesktop skills={skills} deviceSize={deviceType} />
+        }
+      </motion.div>
+    </AnimatePresence>
+  );
 }
