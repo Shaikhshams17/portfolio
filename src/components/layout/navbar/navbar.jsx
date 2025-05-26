@@ -23,31 +23,33 @@ export default function Navbar() {
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7 }}
-      className="fixed top-0 left-0 w-full backdrop-blur-lg bg-white bg-opacity-10 shadow-lg z-50"
+      className="fixed top-0 left-0 w-full backdrop-blur-lg bg-white bg-opacity-80 shadow-lg z-50"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 flex justify-between items-center">
         {/* Logo */}
         <motion.div
-          className="text-white text-2xl font-bold cursor-pointer"
+          className="text-[#251d5c] text-2xl font-bold cursor-pointer"
           whileHover={{ scale: 1.1 }}
         >
           <Link href="/">Shams Ali</Link>
         </motion.div>
 
         {/* Desktop Navigation */}
-        <ul className="hidden md:flex space-x-6 text-white font-semibold text-lg">
+        <ul className="hidden md:flex space-x-6 font-semibold text-lg text-[#251d5c]">
           {navLinks.map((link, index) => (
             <motion.li
               key={index}
               className={`relative cursor-pointer transition ${
-                pathname === link.path ? "text-red-500" : "hover:text-red-500"
+                pathname === link.path
+                  ? "text-blue-800"
+                  : "hover:text-blue-800"
               }`}
               whileHover={{ scale: 1.1 }}
             >
               <Link href={link.path}>{link.name}</Link>
               {pathname === link.path && (
                 <motion.div
-                  className="absolute left-0 bottom-0 w-full h-1 bg-red-500"
+                  className="absolute left-0 bottom-0 w-full h-1 bg-blue-800"
                   layoutId="underline"
                 />
               )}
@@ -58,7 +60,7 @@ export default function Navbar() {
         {/* Hamburger Menu for Mobile */}
         <div className="md:hidden">
           <button onClick={toggleMenu} aria-label="Toggle Menu">
-            {isOpen ? <X className="text-white" /> : <Menu className="text-white" />}
+            {isOpen ? <X className="text-[#251d5c]" /> : <Menu className="text-[#251d5c]" />}
           </button>
         </div>
       </div>
@@ -71,14 +73,16 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="md:hidden bg-white bg-opacity-90 backdrop-blur-lg"
+            className="md:hidden bg-white bg-opacity-95 backdrop-blur-lg"
           >
-            <ul className="flex flex-col space-y-4 py-4 px-6 text-black">
+            <ul className="flex flex-col space-y-4 py-4 px-6 text-[#251d5c]">
               {navLinks.map((link, index) => (
                 <motion.li
                   key={index}
                   className={`cursor-pointer transition ${
-                    pathname === link.path ? "text-red-500" : "hover:text-red-500"
+                    pathname === link.path
+                      ? "text-blue-800"
+                      : "hover:text-blue-800"
                   }`}
                   whileHover={{ scale: 1.1 }}
                   onClick={toggleMenu}

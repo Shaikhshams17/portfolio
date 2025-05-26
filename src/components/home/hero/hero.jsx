@@ -83,16 +83,16 @@ function WaveBackground({ mousePosition }) {
       >
         <defs>
           <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(28, 38, 56, 0.9)" />
-            <stop offset="100%" stopColor="rgba(28, 38, 56, 0.3)" />
+            <stop offset="0%" stopColor="rgba(37, 29, 92, 0.9)" />
+            <stop offset="100%" stopColor="rgba(37, 29, 92, 0.3)" />
           </linearGradient>
           <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(28, 38, 56, 0.7)" />
-            <stop offset="100%" stopColor="rgba(28, 38, 56, 0.1)" />
+            <stop offset="0%" stopColor="rgba(37, 29, 92, 0.7)" />
+            <stop offset="100%" stopColor="rgba(37, 29, 92, 0.1)" />
           </linearGradient>
           <linearGradient id="waveGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(28, 38, 56, 0.5)" />
-            <stop offset="100%" stopColor="rgba(28, 38, 56, 0.05)" />
+            <stop offset="0%" stopColor="rgba(37, 29, 92, 0.5)" />
+            <stop offset="100%" stopColor="rgba(37, 29, 92, 0.05)" />
           </linearGradient>
           <filter id="glow">
             <feMorphology operator="dilate" radius="2"/>
@@ -162,55 +162,68 @@ export default function SimplifiedHeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen py-20">
           {/* Left Content */}
           <motion.div 
-            className="flex flex-col justify-center space-y-6 lg:space-y-8"
+            className="flex flex-col justify-center space-y-8 lg:space-y-10"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
             {/* Status Badge */}
             <motion.div 
-              className="flex items-center space-x-4 mb-4"
+              className="flex items-center space-x-4 mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              {/* <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#1c2638] to-transparent"></div>
-              <span className="px-4 py-2 bg-[#1c2638]/10 border border-[#1c2638]/30 rounded-full text-[#1c2638] text-sm font-medium backdrop-blur-sm">
-                Available for Work
+              {/* <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#251d5c] to-transparent"></div>
+              <span className="px-6 py-3 bg-[#251d5c]/10 border border-[#251d5c]/30 rounded-full text-[#251d5c] text-sm font-semibold backdrop-blur-sm tracking-wide">
+                AVAILABLE FOR WORK
               </span> */}
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#1c2638] to-transparent"></div>
+              <div className="h-px flex-1 bg-gradient-to-r from-[#251d5c] via-transparent to-transparent"></div>
             </motion.div>
             
             {/* Main Heading */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               <TypewriterText
                 text="Hello, I'm"
-                className="text-2xl sm:text-3xl lg:text-4xl font-light text-white/80"
+                className="text-xl sm:text-2xl lg:text-3xl font-light text-white/70 tracking-wide"
                 delay={0.8}
               />
               
-              <TypewriterText
-                text="Shams Ali"
-                className="text-3xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold bg-white bg-clip-text text-transparent"
-                delay={1.2}
-              />
-              
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                {/* <div className="h-1 w-20 bg-gradient-to-r from-[#1c2638] to-transparent"></div> */}
+              <div className="relative">
                 <TypewriterText
-                  text="Full Stack Developer & DevOps Engineer"
-                  className="text-xl sm:text-2xl lg:text-3xl font-medium text-white/90"
+                  text="Shams Ali"
+                  className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight tracking-tight"
+                  delay={1.2}
+                />
+                {/* Professional accent line */}
+                <motion.div
+                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-[#251d5c] via-[#4a3b8a] to-transparent"
+                  initial={{ width: 0 }}
+                  animate={{ width: "60%" }}
+                  transition={{ duration: 1.2, delay: 2.2 }}
+                />
+              </div>
+              
+              <div className="flex flex-col space-y-3 pt-4">
+                <TypewriterText
+                  text="Full Stack Developer"
+                  className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#251d5c] tracking-wide"
                   delay={1.8}
+                />
+                <TypewriterText
+                  text="& DevOps Engineer"
+                  className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white/90 tracking-wide"
+                  delay={2.2}
                 />
               </div>
             </div>
             
             {/* Description */}
             <motion.p
-              className="text-lg lg:text-xl text-gray-300 max-w-2xl leading-relaxed"
+              className="text-lg lg:text-xl text-gray-300 max-w-2xl leading-relaxed font-light"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 2.4 }}
+              transition={{ duration: 0.8, delay: 2.8 }}
             >
               Crafting exceptional digital experiences with modern technologies. 
               Specializing in React, Node.js, cloud architecture, and seamless DevOps workflows.
@@ -221,18 +234,18 @@ export default function SimplifiedHeroSection() {
               className="flex flex-col sm:flex-row gap-4 pt-8"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 2.8 }}
+              transition={{ duration: 0.8, delay: 3.2 }}
             >
               <motion.button
-                className="group px-8 py-4 bg-gradient-to-r from-[#1c2638] to-[#243244] text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-[#1c2638]/25 transition-all duration-300 transform hover:scale-105"
+                className="group px-8 py-4 bg-gradient-to-r from-[#251d5c] to-[#3a2d7a] text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-[#251d5c]/25 transition-all duration-300 transform hover:scale-105 border border-[#251d5c]/20"
                 onClick={handleWhatsAppClick}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="flex items-center justify-center space-x-2">
-                  <span>Let's Connect</span>
+                <span className="flex items-center justify-center space-x-3">
+                  <span className="tracking-wide">Let's Connect</span>
                   <motion.span
-                    className="group-hover:translate-x-1 transition-transform duration-300"
+                    className="group-hover:translate-x-1 transition-transform duration-300 text-lg"
                   >
                     →
                   </motion.span>
@@ -240,7 +253,7 @@ export default function SimplifiedHeroSection() {
               </motion.button>
               
               {/* <motion.button
-                className="px-8 py-4 border-2 border-white/20 text-white font-bold rounded-xl hover:border-[#1c2638] hover:text-[#1c2638] hover:shadow-xl hover:shadow-[#1c2638]/10 transition-all duration-300 backdrop-blur-sm"
+                className="px-8 py-4 border-2 border-[#251d5c]/40 text-white font-bold rounded-xl hover:border-[#251d5c] hover:bg-[#251d5c]/10 hover:shadow-xl hover:shadow-[#251d5c]/20 transition-all duration-300 backdrop-blur-sm tracking-wide"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -256,25 +269,25 @@ export default function SimplifiedHeroSection() {
       
       {/* Scroll Indicator */}
       <motion.div 
-        className=" bottom-8 left-1/2 transform -translate-x-1/2 z-40 flex flex-col items-center"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40 flex flex-col items-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 4 }}
       >
-        {/* <motion.div
+        <motion.div
           className="text-white/60 text-sm mb-4 font-light tracking-wider"
           animate={{ opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
           SCROLL TO EXPLORE
-        </motion.div> */}
+        </motion.div>
         
         <motion.div 
-          className="w-6 h-12 rounded-full border-2 border-white/30 relative overflow-hidden cursor-pointer group hover:border-[#1c2638]/60 transition-colors duration-300"
+          className="w-6 h-12 rounded-full border-2 border-white/30 relative overflow-hidden cursor-pointer group hover:border-[#251d5c]/60 transition-colors duration-300"
           whileHover={{ scale: 1.1 }}
         >
           <motion.div 
-            className="absolute top-2 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-gradient-to-b from-[#1c2638] to-transparent rounded-full"
+            className="absolute top-2 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-gradient-to-b from-[#251d5c] to-transparent rounded-full"
             animate={{ 
               y: [0, 16, 0],
               opacity: [1, 0.3, 1]
