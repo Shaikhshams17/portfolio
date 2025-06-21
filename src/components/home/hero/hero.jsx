@@ -153,7 +153,7 @@ export default function SimplifiedHeroSection() {
   };
 
   return (
-    <div className="relative w-screen h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800">
       {/* Interactive Wave Background */}
       <WaveBackground mousePosition={mousePosition} />
       
