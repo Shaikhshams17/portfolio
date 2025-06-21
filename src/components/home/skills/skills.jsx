@@ -4,7 +4,103 @@ import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
-// Simplified skill orbs with better positioning
+// Mobile-optimized skill orbs with touch interaction
+function MobileSkillOrbs({ skills }) {
+  const groupRef = useRef();
+  
+  const positions = useMemo(() => {
+    return skills.map((_, index) => {
+      const angle = (index / skills.length) * Math.PI * 2;
+      const layer = Math.floor(index / 6); // 6 items per layer for mobile
+      const layerRadius = 4 - layer * 1.5; // Smaller radius for mobile
+      const x = Math.cos(angle) * layerRadius;
+      const z = Math.sin(angle) * layerRadius;
+      const y = (Math.sin(angle * 1.2) * 2) + (layer * 2);
+      return [x, y, z];
+    });
+  }, [skills.length]);
+
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = clock.getElapsedTime() * 0.08; // Slower rotation for mobile
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      {skills.map((skill, index) => {
+        const [x, y, z] = positions[index];
+        
+        return (
+          <Float 
+            speed={1.5} 
+            rotationIntensity={0.2} 
+            floatIntensity={1.2}
+            key={skill.title}
+          >
+            <group position={[x, y, z]} scale={0.8}>
+              <Html center distanceFactor={8}>
+                <motion.div
+                  className="relative cursor-pointer"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    transition: { 
+                      delay: index * 0.1, 
+                      duration: 0.8,
+                      type: "spring",
+                      stiffness: 120
+                    } 
+                  }}
+                  whileTap={{
+                    scale: 0.9,
+                    transition: { type: "spring", stiffness: 400 }
+                  }}
+                >
+                  <div 
+                    className="w-24 h-28 p-3 rounded-xl bg-white/15 backdrop-blur-lg border border-white/25 transition-all duration-300 group active:bg-white/20"
+                    style={{
+                      boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)"
+                    }}
+                  >
+                    {/* Icon container */}
+                    <div className="mb-2">
+                      <div className="bg-slate-800/70 p-2.5 rounded-lg border border-white/15">
+                        <img
+                          src={skill.img}
+                          alt={skill.title}
+                          className="w-8 h-8 object-contain mx-auto"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-white text-xs font-medium text-center mb-2">
+                      {skill.title}
+                    </h3>
+                    
+                    {/* Progress bar */}
+                    <div className="h-0.5 bg-slate-600/50 rounded-full overflow-hidden">
+                      <motion.div 
+                        className="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ delay: index * 0.1 + 1.2, duration: 1.2 }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </Html>
+            </group>
+          </Float>
+        );
+      })}
+    </group>
+  );
+}
+
+// Desktop skill orbs (unchanged)
 function SkillOrbs({ skills, deviceSize }) {
   const groupRef = useRef();
   
@@ -132,7 +228,112 @@ function SimpleLighting() {
   );
 }
 
-// Compact desktop experience
+// Enhanced mobile experience with 3D
+function EnhancedMobile({ skills }) {
+  const [showInstructions, setShowInstructions] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowInstructions(false);
+    }, 4000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="py-8 px-4 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Background particles */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+        <div className="absolute top-32 right-16 w-1 h-1 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-40 left-8 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-20 right-12 w-1 h-1 bg-pink-400 rounded-full animate-pulse" style={{ animationDelay: '3s' }} />
+      </div>
+
+      {/* Touch instructions overlay */}
+      <AnimatePresence>
+        {showInstructions && (
+          <motion.div
+            className="absolute top-4 left-4 right-4 z-10 text-center"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <p className="text-white text-xs">
+                👆 Touch and drag to explore • Tap skills to interact
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Header */}
+      <motion.div 
+        className="text-center mb-6 mt-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+          My Skills
+        </motion.h2>
+        <motion.div 
+          className="w-16 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto rounded-full mb-2"
+          initial={{ width: 0 }}
+          animate={{ width: 64 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        />
+        <motion.p className="text-slate-400 text-xs">
+          {skills.length} core technologies
+        </motion.p>
+      </motion.div>
+
+      {/* 3D Skills Container */}
+      <div className="relative h-96 w-full touch-manipulation">
+        <Canvas 
+          camera={{ position: [0, 0, 12], fov: 70 }}
+          gl={{ 
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance"
+          }}
+        >
+          <SimpleLighting />
+          <MobileSkillOrbs skills={skills} />
+          <Stars 
+            radius={80} 
+            depth={40} 
+            count={200} 
+            factor={1.5} 
+            saturation={0.2} 
+            fade 
+            speed={0.5} 
+          />
+          <OrbitControls 
+            enableZoom={true}
+            minDistance={8}
+            maxDistance={20}
+            enablePan={true}
+            enableRotate={true}
+            rotateSpeed={0.8}
+            autoRotate={true}
+            autoRotateSpeed={0.5}
+            dampingFactor={0.05}
+            enableDamping={true}
+            touches={{
+              ONE: THREE.TOUCH.ROTATE,
+              TWO: THREE.TOUCH.DOLLY_PAN
+            }}
+          />
+        </Canvas>
+      </div>
+    </div>
+  );
+}
+
+// Compact desktop experience (unchanged)
 function CompactDesktop({ skills, deviceSize }) {
   const mouse = {
     x: useSpring(useMotionValue(0), { stiffness: 100, damping: 30 }),
@@ -163,9 +364,9 @@ function CompactDesktop({ skills, deviceSize }) {
         <motion.h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
           Technical Skills
         </motion.h2>
-        <motion.p className="text-slate-400 text-sm">
+        {/* <motion.p className="text-slate-400 text-sm">
           Hover and drag to explore • {skills.length} technologies
-        </motion.p>
+        </motion.p> */}
       </motion.div>
 
       {/* 3D Skills Container */}
@@ -212,7 +413,7 @@ function CompactDesktop({ skills, deviceSize }) {
   );
 }
 
-// Condensed tablet view
+// Condensed tablet view (unchanged)
 function CompactTablet({ skills }) {
   return (
     <div className="py-16 px-6 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -267,65 +468,6 @@ function CompactTablet({ skills }) {
                 </div>
                 
                 <h3 className="text-white font-medium text-sm text-center">
-                  {skill.title}
-                </h3>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Streamlined mobile experience
-function StreamlinedMobile({ skills }) {
-  return (
-    <div className="py-12 px-4 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header */}
-      <motion.div 
-        className="text-center mb-10"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <motion.h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
-          My Skills
-        </motion.h2>
-        <motion.p className="text-slate-400 text-sm">
-          {skills.length} core technologies
-        </motion.p>
-      </motion.div>
-      
-      {/* Tight grid */}
-      <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
-        {skills.map((skill, index) => (
-          <motion.div
-            key={skill.title}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1,
-              transition: { 
-                delay: index * 0.04, 
-                duration: 0.4
-              } 
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="p-3 bg-white/8 backdrop-blur-lg border border-white/10 rounded-lg">
-              <div className="flex flex-col items-center">
-                <div className="mb-2">
-                  <div className="bg-slate-800/60 p-2.5 rounded-lg border border-white/10">
-                    <img
-                      src={skill.img}
-                      alt={skill.title}
-                      className="w-8 h-8 object-contain"
-                    />
-                  </div>
-                </div>
-                
-                <h3 className="text-white font-medium text-xs text-center">
                   {skill.title}
                 </h3>
               </div>
@@ -402,7 +544,7 @@ export default function Skills() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
       >
-        {deviceType === "mobile" && <StreamlinedMobile skills={skills} />}
+        {deviceType === "mobile" && <EnhancedMobile skills={skills} />}
         {deviceType === "tablet" && <CompactTablet skills={skills} />}
         {(deviceType === "laptop" || deviceType === "small-desktop" || deviceType === "desktop") && 
           <CompactDesktop skills={skills} deviceSize={deviceType} />

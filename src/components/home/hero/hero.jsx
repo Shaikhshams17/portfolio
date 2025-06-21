@@ -266,47 +266,6 @@ export default function SimplifiedHeroSection() {
           <div className="hidden lg:block"></div>
         </div>
       </div>
-      
-      {/* Scroll Indicator */}
-      <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40 flex flex-col items-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 4 }}
-      >
-        <motion.div
-          className="text-white/60 text-sm mb-4 font-light tracking-wider"
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          SCROLL TO EXPLORE
-        </motion.div>
-        
-        <motion.div 
-          className="w-6 h-12 rounded-full border-2 border-white/30 relative overflow-hidden cursor-pointer group hover:border-[#251d5c]/60 transition-colors duration-300"
-          whileHover={{ scale: 1.1 }}
-        >
-          <motion.div 
-            className="absolute top-2 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-gradient-to-b from-[#251d5c] to-transparent rounded-full"
-            animate={{ 
-              y: [0, 16, 0],
-              opacity: [1, 0.3, 1]
-            }}
-            transition={{ 
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        </motion.div>
-        
-        <motion.div
-          className="w-px h-16 bg-gradient-to-b from-white/30 to-transparent mt-4"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 1, delay: 4.5 }}
-        />
-      </motion.div>
     </div>
   );
 }
