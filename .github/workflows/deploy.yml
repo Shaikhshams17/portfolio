@@ -45,5 +45,4 @@ jobs:
             echo "💾 Saving PM2 config..."
             pm2 save
 
-            echo "🔁 Restarting Nginx..."
-            sudo systemctl restart nginx
+            echo "✅ Deployment complete without restarting Nginx."
