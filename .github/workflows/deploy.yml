@@ -1,0 +1,49 @@
+name: Deploy Portfolio to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "✅ Connecting to VPS..."
+            cd /home/deployer/portfolio
+
+            echo "📦 Pulling latest code from portfolio repo..."
+            git pull origin main
+
+            echo "📁 Installing dependencies..."
+            if [ -f package.json ]; then
+              npm install
+            fi
+
+            echo "🛠️ Building Next.js app..."
+            if [ -f package.json ]; then
+              npm run build
+            fi
+
+            echo "🚀 Restarting or starting PM2 process on port 4141..."
+            if pm2 list | grep -q "portfolio"; then
+              pm2 restart portfolio
+              echo "🔄 PM2 process 'portfolio' restarted."
+            else
+              pm2 start npm --name "portfolio" -- start -- --port 4141
+              echo "🆕 PM2 process 'portfolio' created on port 4141."
+            fi
+
+            echo "💾 Saving PM2 config..."
+            pm2 save
+
+            echo "🔁 Restarting Nginx..."
+            sudo systemctl restart nginx
